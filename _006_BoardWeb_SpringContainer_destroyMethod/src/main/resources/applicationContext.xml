@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- init-method : 객체생성될때 사용할 메소드 매핑(초기화 메소드) -->
+	<bean id="tv" class="polymorphism.SamsungTV" init-method="initMethod"></bean>
+	
+	
+</beans>
