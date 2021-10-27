@@ -7,6 +7,5 @@
 	<!-- destroy-method : 객체가 삭제될 때 사용할 메소드 매핑 (객체 삭제 메소드) -->
 	<!-- lazy-init : 객체 생성 시점 설정, 기본 값은 false(컨테이너 구동 시 바로 객체 생성), true(사용자 요청에 의해 객체 생성) -->
 	<bean id="tv" class="polymorphism.SamsungTV" destroy-method="initMethod" init-method="destroyMethod" lazy-init="true"></bean>
-	
-	
+
 </beans>

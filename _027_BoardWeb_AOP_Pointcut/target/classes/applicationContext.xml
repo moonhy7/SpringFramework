@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	
+	<!-- context:component-scan : base-package에 있는 클래스 중 @Component 어노테이션 설정되어있는 객체를 찾아서 
+								   자동으로 객체를 생성 -->
+	<context:component-scan base-package="com.springbook.biz"></context:component-scan>
+	
+	<bean id="log" class="com.springbook.biz.common.LogAdvice"></bean>
+	
+	<!-- AOP 설정 -->
+	<aop:config>
+		<!-- 조인포인트 : 포인트컷의 후보. expression에서 지정한 클래스의 모든 메소드들이 대상이 됨 -->
+		<!-- 포인트컷 : 실제 aop가 적용될 클래스 메소드들. 조인포인트에서 필터링해서 원하는 메소드에만 적용함
+					 ex) transaction을 만들었을 때 조회기능은 필요가 없고 입력, 수정, 삭제에서만 동작하도록 설정(commit, rollback) -->
+		<aop:pointcut expression="execution(* com.springbook.biz..*Impl.*(..))" id="allPointcut"/>
+		<aop:pointcut expression="execution(* com.springbook.biz..*Impl.get*(..))" id="getPointcut"/>
+		
+		<!-- 어드바이스 : 횡단관심에 해당되는 공통기능.
+		               ex) LogAdive 클래스의 printLog 메소드가 어드바이스에 해당됨
+		               transaction(commit, rollback) : 비즈니스 로직 실행 전에 동작해봤자 의미가 없음
+		               								     어드바이스의 동작시점을 이용해서 원하는 시점에
+		               								     어드바이스가 실행되도록 설정 -->
+		<aop:aspect ref="log">
+			<aop:before pointcut-ref="getPointcut" method="printLog"/>
+		</aop:aspect>
+	</aop:config>
+	
+	<!-- <bean id="userService" class="com.springbook.biz.user.impl.UserServiceImpl">
+		<property name="userDAO" ref="userDAO"></property>
+	</bean>
+	
+	<bean id="userDAO" class="com.springbook.biz.user.impl.UserDAO"></bean> -->
+</beans>

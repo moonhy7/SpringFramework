@@ -6,6 +6,4 @@
 	<!-- init-method : 객체생성될때 사용할 메소드 매핑(초기화 메소드) -->
 	<!-- destroy-method : 객체가 삭제될 때 사용할 메소드 매핑 (객체 삭제 메소드) -->
 	<bean id="tv" class="polymorphism.SamsungTV" destroy-method="initMethod" init-method="destroyMethod"></bean>
-	
-	
 </beans>

@@ -20,7 +20,7 @@ public class TVUser {
 		// 사용자의 요청이 없기 때문임
 		
 		//2번 경우
-		TV tv = (TV)factory.getBean("tv");
+//		TV tv = (TV)factory.getBean("tv");
 		//룩업부분 주석 해제 후 실행하면 객체 생성된 것을 볼 수 있음 
 		//사용자의 요청이 있었기 때문에 객체가 잘 생성된 것임
 		
@@ -29,8 +29,6 @@ public class TVUser {
 		TV tv1 = (TV)factory.getBean("tv");
 		TV tv2 = (TV)factory.getBean("tv");
 		TV tv3 = (TV)factory.getBean("tv");
-		
-		
 		
 //		tv.powerOn();
 //		tv.volumeUp();
