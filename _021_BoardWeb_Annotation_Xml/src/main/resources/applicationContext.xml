@@ -28,7 +28,5 @@
 	<!-- <bean id="sony" class="polymorphism.SonySpeaker"></bean>
 	<bean id="apple" class="polymorphism.AppleSpeaker"></bean> -->
 	
-	
-	
-	
+
 </beans>
