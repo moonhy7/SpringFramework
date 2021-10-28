@@ -19,34 +19,33 @@ import com.springbook.biz.common.LogAdvice;
 public class BoardServiceImpl implements BoardService{
 	@Autowired
 	BoardDAO boardDAO;
-	private LogAdvice log;
+	private Log4jAdvice log;
 	
 	public BoardServiceImpl() {
-		log = new LogAdvice();
+		log = new Log4jAdvice();
 	}
 	
 	public void insertBoard(BoardVO vo) {
-		log.printLog();
+		log.printLogging();
 		boardDAO.insertBoard(vo);
 	}
 	
 	public void updateBoard(BoardVO vo) {
-		log.printLog();
+		log.printLogging();
 		boardDAO.upadateBoard(vo);
 	}
 	
 	public void deleteBoard(BoardVO vo) {
-		log.printLog();
+		log.printLogging();
 		boardDAO.deleteBoard(vo);
 	}
 	
 	public BoardVO getBoard(BoardVO vo) {
-		log.printLog();
 		return boardDAO.getBoard(vo);
 	}
 	
 	public List<BoardVO> getBoardList(BoardVO vo) {
-		log.printLog();
+		log.printLogging();
 		return boardDAO.getBoardList(vo);
 	}
 }

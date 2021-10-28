@@ -12,14 +12,13 @@
 								   자동으로 객체를 생성 -->
 	<context:component-scan base-package="com.springbook.biz"></context:component-scan>
 	
-	<bean id="log" class="com.springbook.biz.common.LogAdvice"></bean>
+	<bean id="log" class="com.springbook.biz.common.Log4jAdvice"></bean>
 	
 	<!-- AOP 설정 -->
 	<aop:config>
 		<aop:pointcut expression="execution(* com.springbook.biz..*Impl.*(..))" id="allPointcut"/>
-		
 		<aop:aspect ref="log">
-			<aop:before pointcut-ref="allPointcut" method="printLog"/>
+			<aop:before pointcut-ref="allPointcut" method="printLogging"/>
 		</aop:aspect>
 	</aop:config>
 	
