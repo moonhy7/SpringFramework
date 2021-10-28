@@ -46,6 +46,7 @@ public class BoardVO {
 		this.cnt = cnt;
 	}
 	
+	
 	@Override
 	public String toString() {
 		return "BoardVO [seq=" + seq + ", title=" + title + ", writer=" + writer + ", content=" + content + ", regDate="
