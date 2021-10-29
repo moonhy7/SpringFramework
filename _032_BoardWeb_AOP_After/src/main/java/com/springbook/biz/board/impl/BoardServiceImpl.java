@@ -22,9 +22,9 @@ public class BoardServiceImpl implements BoardService{
 	
 	public void insertBoard(BoardVO vo) {
 		//객체 생성 시에 필드 변수의 int 타입들은 0으로 초기화 됨
-//		if(vo.getSeq() == 0) {
-//			throw new IllegalArgumentException("0번 글은 등록할 수 없습니다.");
-//		}
+		if(vo.getSeq() == 0) {
+			throw new IllegalArgumentException("0번 글은 등록할 수 없습니다.");
+		}
 		
 		boardDAO.insertBoard(vo);
 	}
