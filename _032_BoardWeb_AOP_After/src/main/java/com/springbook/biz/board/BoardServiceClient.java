@@ -17,7 +17,7 @@ public class BoardServiceClient {
 		BoardVO vo = new BoardVO();
 		vo.setTitle("임시 제목");
 		vo.setWriter("홍길동");
-		vo.setContent("임시 내용.........");
+		vo.setContent("임시 내용........");
 		boardService.insertBoard(vo);
 		
 		//4. 글 목록 조회 테스트
@@ -25,6 +25,7 @@ public class BoardServiceClient {
 		for(BoardVO board : boardList) {
 			System.out.println("---> " + board.toString());
 		}
+		 
 		
 		//5. Spring 컨테이너 종료
 		container.close();
