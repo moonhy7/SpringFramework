@@ -52,14 +52,14 @@
 		               								     어드바이스가 실행되도록 설정 -->
 		<!-- aspact or advisor : 횡단관심이 공통기능메소드(어드바이스) 실행될 객체 -->
 		<!-- aop:advisor : transaction 설정 시 사용 -->
-		<aop:aspect ref="afterReturning">
+		<aop:aspect ref="afterThrowing">
 			<!-- 어드바이스 동작 시점 : aop:before, aop:after, aop:arround...
 				 aop:before : 포인트컷 메소드가 실행되기 전에 동작
 				 aop:after-returning : 포인트컷 메소드가 정상적으로 리턴되면 동작(try에 해당)
 				 aop:after-throwing : 포인트컷 메소드 실행중에 예외가 발생하면 동작(catch에 해당)
 				 aop:after : 포인트컷 메소드가 완료된후 무조건 실행(finally에 해당) 
 				 aop:arround : 포인트컷 메소드 호출을 가로채서 포인트컷 실행 전후에 처리할 어드바이스 삽입-->
-			<aop:after-returning pointcut-ref="allPointcut" method="afterReturningAdvice"/>
+			<aop:after-throwing pointcut-ref="allPointcut" method="afterThrowingAdvice"/>
 		</aop:aspect>
 		
 		<aop:aspect ref="after">
