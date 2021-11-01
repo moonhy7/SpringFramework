@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+<!-- @Controller를 이용해서 Controller 객체들이 자동 생성되도록 설정
+		 @Controller와 @Component의 차이점 : @Component는 객체를 생성해서 메모리 올려주는 역할
+		 								 @Controller는 DispatcherServlet에서 Controller 객체로 인식시켜주는 역할 + 객체 자동 생성
+		 								              DispatcherServlet에서 Controller 객체로 인식하기 때문에 실행하면 자동으로 handleRequest()메소드를 호출
+	 -->
+<context:component-scan base-package="com.springbook.view"></context:component-scan>
+	
+	<!-- 파일 업로드 설정 -->
+	<!-- 
+		bean 객체 등록시 Resolver 클래스들은 정해진 id 값으로 지정해줘야 DispatcherServlet에서 인식 가능함
+	 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 업로드 파일 최대 크기 설정 -->
+		<property name="maxUploadSize" value="100000"></property>
+	</bean>
+
+	<!-- HandlerMapping 등록 -->
+	<!-- <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/login.do">login</prop>
+				<prop key="/getBoardList.do">getBoardList</prop>
+				<prop key="/getBoard.do">getBoard</prop>
+				<prop key="/insertBoard.do">insertBoard</prop>
+				<prop key="/updateBoard.do">updateBoard</prop>
+				<prop key="/deleteBoard.do">deleteBoard</prop>
+				<prop key="/logout.do">logout</prop>
+			</props>
+		</property>
+	</bean> -->
+	
+	<!-- Controller 등록 -->
+	<!-- <bean id="login" class="com.springbook.view.user.LoginController"></bean>
+	<bean id="getBoardList" class="com.springbook.view.board.GetBoardListController"></bean>
+	<bean id="getBoard" class="com.springbook.view.board.GetBoardController"></bean>
+	<bean id="insertBoard" class="com.springbook.view.board.InsertBoardController"></bean>
+	<bean id="updateBoard" class="com.springbook.view.board.UpdateBoardController"></bean>
+	<bean id="deleteBoard" class="com.springbook.view.board.DeleteBoardController"></bean>
+	<bean id="logout" class="com.springbook.view.user.LogoutController"></bean>
+
+	ViewResolver 등록
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/board/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean> -->
+	
+</beans>
+
