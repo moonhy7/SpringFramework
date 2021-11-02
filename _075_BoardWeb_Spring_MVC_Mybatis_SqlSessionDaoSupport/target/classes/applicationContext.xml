@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- context:component-scan : base-package에 있는 클래스 중 @Component 어노테이션 설정되어있는 객체를 찾아서 
+								   자동으로 객체를 생성 -->
+	<context:component-scan base-package="com.springbook.biz"></context:component-scan>
+	
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	
+	<!-- DataSource 설정 -->
+	<!-- 외부 properties파일 참조 -->
+	<context:property-placeholder location="classpath:config/datasource.properties"/>
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<!-- setter 메소드를 이용한 의존성 주입 -->
+		<!-- Oracle -->
+		<property name="driverClassName" value="${jdbc.driver}"></property>
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<!-- MySQl -->
+		<!--  
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/studydb?serverTimezone=UTC"></property>
+		<property name="username" value="study"></property>
+		<property name="password" value="study"></property>
+		-->
+	</bean>
+	
+	<!-- JDBCTemplate -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- sessionFactory 객체 등록 -->
+	<!-- sqlSessionFactory가 SqlSession을 생산하기 위해서는 dataSource와 등록된 mapper정보가 필수 -->
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:sql-map-config.xml"></property>
+	</bean>
+	
+	<!-- Transaction 설정 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- Trasaction advice 등록 -->
+	<!-- 트랜잭션에선 commit이나  rollback 어떤 어드바이스 메소드가 호출될지 모르기 때문에 어드바이스 메소드를 지정할 수 없고
+		 aspect가 아닌 advisor로 aop 설정해야됨 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<!-- tx:attributes : Transaction advice 동작시점을 설정, 포인트컷 지정없이 메소드 지정가능-->
+		<tx:attributes>
+			<!-- 
+				tx:method : advice 동작할 메소드 지정
+							read-only : transaction이 동작하지 않음(get으로 시작하는 메소드들에서는 트랜잭션 동작x)
+										get*으로 시작하는 메소드들을 제외한 모든 메소드들에서는 트랜잭션이 동작o
+			 -->
+			<tx:method name="get*" read-only="true"/>
+			<tx:method name="*"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+		<aop:pointcut expression="execution(* com.springbook.biz..*(..))" id="txPointcut"/>
+		
+		<aop:advisor pointcut-ref="txPointcut" advice-ref="txAdvice"/>
+	</aop:config>
+	
+	<!-- <bean id="log" class="com.springbook.biz.common.LogAdvice"></bean>
+	<bean id="before" class="com.springbook.biz.common.BeforeAdvice"></bean>
+	<bean id="afterReturning" class="com.springbook.biz.common.AfterReturningAdvice"></bean>
+	<bean id="afterThrowing" class="com.springbook.biz.common.AfterThrowingAdvice"></bean>
+	<bean id="after" class="com.springbook.biz.common.AfterAdvice"></bean>
+	<bean id="around" class="com.springbook.biz.common.AroundAdvice"></bean>
+	
+	AOP 설정
+	aop:config : aop의 루트 엘리먼트. 중복 사용가능. 하위 엘리먼트로는 aop:pointcut, aop:aspect 엘리먼트 사용
+	aop:pointcut : advice가 동작할 비즈니스 메소드를 지정(포인트컷)하는 설정
+	aop:aspect : 비즈니스 메소드에 결합할 횡단관심(adivce) 결합하는 설정
+	aop:advisor : 트랜잭션과 같은 특수경우에는 aop:aspact대신 aop:advisor를 사용
+	<aop:config>
+		조인포인트 : 포인트컷의 후보. expression에서 지정한 클래스의 모든 메소드들이 대상이 됨
+		포인트컷 : 실제 aop가 적용될 클래스 메소드들. 조인포인트에서 필터링해서 원하는 메소드에만 적용함
+					 ex) transaction을 만들었을 때 조회기능은 필요가 없고 입력, 수정, 삭제에서만 동작하도록 설정(commit, rollback)
+		expression : * 포인트컷 메소드의 리턴 타입(*, void, !void)
+						  com.springbook.biz.. : 패키지 경로(com.springbook.biz의 하위 패키지 모두 선택)
+						  com.springbook.biz : 패키지 경로(com.springbook.biz 패키지만 선택)
+						  com.springbook.biz..impl : 패키지 경로(com.springbook.biz의 하위 패키지의 impl로 끝나는 패키지를 모두 선택) 
+						  *Impl : 클래스 지정(Impl로 끝나는 모든 클래스 지정)
+						  BoardServiceImpl : BoardServcieImpl클래스만 지정
+						  BoardService+ : BoardService 인터페이스를 상속받은 모든 자식 클래스 지정
+						  *(..) : 메소드 지정(매개변수 개수와 타입에 제약이 없는 모든 메소드 지정)
+						  get*(..) : 메소드 지정(매개변수 개수와 타입에 제약이 없는 get으로 시작하는 이름의 메소드 지정)
+						  (..) : 매개변수 타입 지정(매개변수 개수와 타입에 제약이 없음)
+						  (*) : 매개변수가 반드시 1개이면서 타입에 제약이 없음
+						  (com.springbook.biz.user.UserVO) : UserVO 매개변수를 가지는 메소드 지정. 항상 패키지 경로도 포함
+						  (!com.springbook.biz.user.UserVO) : UserVO 매개변수를 가지고 있지 않은 메소드를 지정.
+						  (Integer, ..) : 매개변수 개수는 상관이 없지만 첫 번째 매개변수로는 Integer 타입의 매개변수를 가지고 있는 메소드를 지정
+						  (Integer, *) : 매개변수가 2개 이면서 첫 번째 매개변수가 Integer 타입인 메소드를 지정
+		<aop:pointcut expression="execution(* com.springbook.biz..*Impl.*(..))" id="allPointcut"/>
+		<aop:pointcut expression="execution(* com.springbook.biz..*Impl.get*(..))" id="getPointcut"/>
+		
+		어드바이스 : 횡단관심에 해당되는 공통기능.
+		               ex) LogAdive 클래스의 printLog 메소드가 어드바이스에 해당됨
+		               transaction(commit, rollback) : 비즈니스 로직 실행 전에 동작해봤자 의미가 없음
+		               								     어드바이스의 동작시점을 이용해서 원하는 시점에
+		               								     어드바이스가 실행되도록 설정
+		aspact or advisor : 횡단관심이 공통기능메소드(어드바이스) 실행될 객체
+		aop:advisor : transaction 설정 시 사용
+		<aop:aspect ref="afterThrowing">
+			어드바이스 동작 시점 : aop:before, aop:after, aop:arround...
+				 aop:before : 포인트컷 메소드가 실행되기 전에 동작
+				 aop:after-returning : 포인트컷 메소드가 정상적으로 리턴되면 동작(try에 해당)
+				 aop:after-throwing : 포인트컷 메소드 실행중에 예외가 발생하면 동작(catch에 해당)
+				 aop:after : 포인트컷 메소드가 완료된후 무조건 실행(finally에 해당) 
+				 aop:around : 포인트컷 메소드 호출을 가로채서 포인트컷 실행 전후에 처리할 어드바이스 삽입
+			<aop:after-throwing pointcut-ref="allPointcut" method="afterThrowingAdvice"
+			returning="returnObj"/>
+		</aop:aspect>
+	</aop:config>
+	
+	<bean id="userService" class="com.springbook.biz.user.impl.UserServiceImpl">
+		<property name="userDAO" ref="userDAO"></property>
+	</bean>
+	
+	<bean id="userDAO" class="com.springbook.biz.user.impl.UserDAO"></bean> -->
+</beans>

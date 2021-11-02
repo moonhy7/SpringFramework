@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- mapper DTD 선언 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper 자체가 DAO 분리되어 나온 개념이기 때문에 namespace는 DAO 명을 따라가는 경우가 일반적임 -->
+<mapper namespace="BoardDAO">
+	<resultMap type="board" id="boardResult">
+		<id property="seq" column="SEQ"/>
+		<result property="title" column="TITLE"/>
+		<result property="writer" column="WRITER"/>
+		<result property="content" column="CONTENT"/>
+		<result property="regDate" column="REGDATE"/>
+		<result property="cnt" column="CNT"/>
+	</resultMap>
+
+	<insert id="insertBoard">
+	<!-- <selectKey keyProperty="seq" resultType="int">
+		SELECT BOARD_SEQ.NEXTVAL AS SEQ FROM DUAL
+	</selectKey>
+	// #{seq} : 사용자 입력 값 or VO에서 가져온 값을 의미 -->
+		<![CDATA[
+		INSERT INTO BOARD(
+						  SEQ
+						, TITLE
+						, WRITER
+						, CONTENT
+						)
+					VALUES(
+							   #{seq}
+							,  #{title}
+							,  #{writer}
+							,  #{content}	
+						)
+		]]>
+	</insert>
+	
+	<update id="updateBoard">
+		<![CDATA[
+		UPDATE BOARD
+			SET	
+				TITLE = #{title}
+			 ,  CONTENT = #{content}
+			 WHERE SEQ = #{seq}
+		]]>
+ 	</update>
+ 	
+ 	<delete id="deleteBoard">
+ 		<![CDATA[
+		DELETE FROM BOARD
+			 WHERE SEQ = #{seq}
+		]]>
+ 	</delete>
+ 	
+ 	<select id="getBoard" resultType="board">
+ 		<![CDATA[
+ 		SELECT * FROM BOARD
+ 			WHERE SEQ = #{seq}
+ 		]]>
+ 	</select>
+ 	 						
+ 	<!-- <select id="getBoardList" resultType="board" parameterType="com.springbook.biz.board.BoardVO"> -->
+ 					<!-- 파라미터타입 : sql-map에서 typeAlias를 주었기 때문에 그냥 board라고 써도 됨 -->
+ 	<!-- <select id="getBoardList" resultType="board" parameterType="board"> -->		
+ 	<select id="getBoardList" resultMap="boardResult">					
+ 		<![CDATA[
+ 		SELECT * FROM BOARD	
+ 			WHERE TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+ 			ORDER BY SEQ DESC
+ 		]]>
+ 	</select>
+</mapper>

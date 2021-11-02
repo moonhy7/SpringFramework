@@ -1,0 +1,21 @@
+#login.jsp
+message.user.login.title=로그인
+message.user.login.id=아이디
+message.user.login.password=비밀번호
+message.user.login.loginBtn=로그인
+
+message.user.login.language.en=영어
+message.user.login.language.ko=한국어
+
+#getBoardList.jsp
+message.board.list.mainTitle=게시글 목록
+message.board.list.welcomeMSG=님! 게시판에 오신 걸 환영합니다.
+message.board.list.search.condition.title=제목
+message.board.list.search.condition.content=내용
+message.board.list.search.condition.btn=검색
+message.board.list.table.head.seq=번호
+message.board.list.table.head.title=제목
+message.board.list.table.head.writer=작성자
+message.board.list.table.head.regDate=등록일
+message.board.list.table.head.cnt=조회수
+message.board.list.link.insertBoard=새 글 등록

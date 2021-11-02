@@ -1,0 +1,20 @@
+1. javaORMPlugin 압축해제
+
+2. C:\DEV211\sts-3.9.15.RELEASE\features로 이동
+
+3. me.karthy.plugin.java.orm.feature_1.0.0.201411180016 폴더 생성
+
+4. 압축 해제한 javaORMPlugin > fetures의 me.karthy.plugin.java.orm.feature_1.0.0.201411180016.jar 파일 생성한 폴더로 복사 붙여넣기
+
+5. C:\DEV211\sts-3.9.15.RELEASE\plugins로 이동
+
+6. javaORMPlugin > plugins의 JavaORMPlugin_1.0.0.201411180016.jar 복사 붙여넣기
+7. javaORMPlugin의 artifacts.jar, content.jar 복사 붙여넣기
+
+8. C:\DEV211\sts-3.9.15.RELEASE\configuration\org.eclipse.equinox.simpleconfigurator로 이동
+
+9. bundles.info파일 vscode로 열기
+
+10. #version=1 밑에 아래의 내용 붙여넣고 저장 후 종료
+
+1.0.0.201411180016.jar,plugins/JavaORMPlugin_1.0.0.201411180016.jar,4,false
