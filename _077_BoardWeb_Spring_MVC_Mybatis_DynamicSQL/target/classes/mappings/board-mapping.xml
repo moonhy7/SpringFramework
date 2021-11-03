@@ -58,7 +58,26 @@
  			WHERE SEQ = #{seq}
  		]]>
  	</select>
- 	 						
+ 	
+ 	<!-- Dynamic SQL 적용 전 -->
+ 	<!-- <select id="getBoardList_T" resultType="boardResult">
+ 		<![CDATA[
+ 			SELECT * FROM BOARD
+ 			WHERE TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+ 			ORDER BY SEQ DESC
+ 		]]>
+ 	</select>
+ 	
+ 	<select id="getBoardList_C" resultType="boardResult">
+ 		<![CDATA[
+ 			SELECT * FROM BOARD
+ 			WHERE CONTENT LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+ 			ORDER BY SEQ DESC
+ 		]]>
+ 	</select> -->
+ 	
+ 	
+ 	 <!-- Dynamic SQL 적용 후 -->				
  	<!-- <select id="getBoardList" resultType="board" parameterType="com.springbook.biz.board.BoardVO"> -->
  					<!-- 파라미터타입 : sql-map에서 typeAlias를 주었기 때문에 그냥 board라고 써도 됨 -->
  	<!-- <select id="getBoardList" resultType="board" parameterType="board"> -->		
