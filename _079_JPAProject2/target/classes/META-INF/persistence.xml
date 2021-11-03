@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<!-- persistence-unit : 영속성 유닛, name 속성으로 설정된 값을 EntityManagerFactory 객체 생성 시 사용 -->
+	<persistence-unit name="_078_JPAProject">
+		<class>com.springbook.biz.board.Board</class>
+		
+		<properties>
+			<!-- 필수 속성 -->
+			<!-- DataSource -->
+			<property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+			<property name="javax.persistence.jdbc.user" value="study"/>
+			<property name="javax.persistence.jdbc.password" value="study"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/studydb?serverTimeZone=UTC"/>
+			<!-- hibernate.dialect : DB마다 문법이 조금씩 다르기 때문에 어떤 DB의 문법을 사용하는 지정 -->
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+		
+			<!-- 옵션 -->
+			<!-- show sql : 생성된 SQL 콘솔에 출력 여부 결정 -->
+			<property name="hibernate.show_sql" value="true"/>
+			<!-- format sql : SQL 출력 시 실행한 포맷으로 출력할지 말지 결정 -->
+			<property name="hibernate.format_sql" value="true"/>
+			<!-- use_sql_comments : 주석 출력 여부 결정 -->
+			<property name="hibernate.use_sql_comments" value="false"/>
+			<!-- id.new_generator_mappings : 새로운 키 생성 전략 사용 여부 결정 -->
+			<property name="hibernate.id.new_generator_mappings" value="true"/>
+			<!-- hbm2ddl.auto : 테이블의 생성, 수정, 삭제를 자동 처리 여부 결정 -->
+			<!-- create : 기존 테이블을 DROP -> CREATE 하도록 설정 -->
+			<!-- create-drop : 기존 테이블을 DROP -> CREATE -> DROP 하도록 설정 -->
+			<!-- update : 기존 테이블을 수정(ALTER) 하도록 설정, 
+						    엔티티클래스가 기존 테이블에서 변화가 없으면 반영안되고 기존 테이블 사용 -->
+			<property name="hibernate.hbm2ddl.auto" value="create"/>		
+		</properties>
+	</persistence-unit>
+</persistence>
