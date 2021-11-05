@@ -43,7 +43,7 @@
 					<td bgcolor="orange">첨부파일 목록</td>
 					<td>
 						<c:forEach var="file" items="${fileList }">
-							<a class="downlink" id="${file.fSeq }" href="${file.fSeq }">${file.originalFileName }</a>
+							<a class="downlink" id="${file.fSeq }" href="${file.originalFileName }">${file.originalFileName }</a>
 							<button type="button" onclick="deleteFile('${file.fSeq }');">삭제</button>
 							<br>
 						</c:forEach>
@@ -79,6 +79,14 @@
 				}
 			});
 		}
+		
+		$(document).ready(function() {
+			$(".downlink").click(function(e){
+				e.preventDefault();
+				var fileName = $(this).attr("href");
+				window.location = "fileDown.do?fileName=" + fileName; 
+			});
+		});
 	</script>
 </body>
 </html>

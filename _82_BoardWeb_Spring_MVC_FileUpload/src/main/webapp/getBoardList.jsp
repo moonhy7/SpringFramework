@@ -40,7 +40,7 @@
 							</c:forEach>
 						</select>
 						<input name="searchKeyword" type="text">
-						<input type="submit" value="<spring:message code="message.board.list.search.condition.btn"/>">
+						<input type="submit" value="검색">
 					</td>
 				</tr>
 			</table>			
@@ -87,8 +87,8 @@
 			</ul>
 		</div>
 		<br>
-		<a href="insertBoard.jsp">
-			<spring:message code="message.board.list.link.insertBoard"/>
+		<a href="insertBoard.do">
+			새 글 등록
 		</a>
 	</center>
 </body>

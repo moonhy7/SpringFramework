@@ -33,6 +33,7 @@ public interface BoardService {
 	//파일 삭제
 	void deleteFile(BoardFileVO vo);
 	
+	//게시글 삭제시 해당 게시글의 첨부파일 삭제
 	void deleteFileList(int seq);
 	
 }

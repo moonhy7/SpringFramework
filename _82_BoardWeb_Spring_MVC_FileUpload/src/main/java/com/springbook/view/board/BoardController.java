@@ -1,6 +1,7 @@
 package com.springbook.view.board;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,11 +9,17 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -42,6 +49,7 @@ public class BoardController {
 		//conditionMap이라는 키 값으로 데이터가 저장
 		return conditionMap;
 	}
+
 	
 	@RequestMapping("/insertBoard.do")
 	//Command 객체 : 사용자가 전송한 데이터를 매핑한 VO를 바로 생성
@@ -144,5 +152,31 @@ public class BoardController {
 	@ResponseBody
 	public void deleteFile(BoardFileVO vo) {
 		boardService.deleteFile(vo);
+	}
+	
+	@RequestMapping(value="fileDown.do")
+	@ResponseBody
+	public ResponseEntity<Resource> fileDown(@RequestParam("fileName") String fileName,
+						HttpServletRequest request) throws Exception {
+		//업로드 파일 경로
+		String path = request.getSession().getServletContext().getRealPath("/") + "/upload/";
+		
+		//파일경로, 파일명으로 리소스 객체 생성
+		Resource resource = new FileSystemResource(path + fileName);
+		
+		//파일 명
+		String resourceName = resource.getFilename();
+		
+		//Http헤더에 옵션을 추가하기 위해서 헤더 변수 선언
+		HttpHeaders headers = new HttpHeaders();
+		
+		try {
+			//헤더에 파일명으로 첨부파일 추가
+			headers.add("Content-Disposition", "attachment; filename=" + new String(resourceName.getBytes("UTF-8"),
+						"ISO-8859-1"));
+		} catch(UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 	}
 }
