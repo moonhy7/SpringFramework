@@ -8,6 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <title><spring:message code="message.board.list.mainTitle"/></title>
+<script src="js/jquery-3.6.0.min.js"></script>
 	<style>
 		ul {
 			list-style: none;
@@ -27,7 +28,9 @@
 		<h3>${userName }<spring:message code="message.board.list.welcomeMSG"/><a href="logout.do">Log-out</a></h3>
 		
 		<!-- 검색 시작 -->
-		<form action="getBoardList.do" method="post">
+		<form action="getBoardList.do" method="post" id="listForm">
+		<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
+		<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
 			<table border="1" cellpadding="0" cellspacing="0" width="700">
 				<tr>
 					<td align="right">
@@ -55,7 +58,7 @@
 			<c:forEach var="board" items="${boardList }">
 				<tr>
 					<td>${board.seq }</td>
-					<td><a href="getBoard.do?seq=${board.seq }">${board.title }</a></td>
+					<td><a href="getBoard.do?seq=${board.seq }&pageNum=${pageMaker.cri.pageNum}&amount=${pageMaker.cri.amount}">${board.title}</a></td>
 					<td>${board.writer }</td>
 					<td><fmt:formatDate value="${board.regDate }" pattern="yyyy-MM-dd"/></td>
 					<td>${board.cnt }</td>
@@ -66,19 +69,19 @@
 			<ul class="pagination">
 				<c:if test="${pageMaker.prev }">
 					<li class="pagination_button">
-						<a href="#">Previous</a>
+						<a href="${pageMaker.startPage - 1 }">Previous</a>
 					</li>
 				</c:if>
 				
 				<c:forEach var="num" begin="${pageMaker.startPage }" end="${pageMaker.endPage }">
 					<li class="pagination_button">
-						<a href="#">${num }</a>
+						<a href="${num }">${num }</a>
 					</li>
 				</c:forEach>
 				
 				<c:if test="${pageMaker.next }">
 					<li class="pagination_button">
-						<a href="#">Next</a>
+						<a href="${pageMaker.endPage + 1 }">Next</a>
 					</li>
 				</c:if>
 			</ul>
@@ -88,5 +91,17 @@
 			<spring:message code="message.board.list.link.insertBoard"/>
 		</a>
 	</center>
+	<script>
+		$(document).ready(function() {
+			var listForm = $("#listForm");
+			
+			$(".pagination_button a").on("click", function(e) {
+				e.preventDefault();
+				
+				listForm.find("input[name='pageNum']").val($(this).attr("href"));
+				listForm.submit();
+			});
+		});
+	</script>
 </body>
 </html>

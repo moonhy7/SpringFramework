@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	<!-- @Controller를 이용해서 Controller 객체들이 자동 생성되도록 설정
+		 @Controller와 @Component의 차이점 : @Component는 객체를 생성해서 메모리 올려주는 역할
+		 								 @Controller는 DispatcherServlet에서 Controller 객체로 인식시켜주는 역할 + 객체 자동 생성
+		 								              DispatcherServlet에서 Controller 객체로 인식하기 때문에 실행하면 자동으로 handleRequest()메소드를 호출
+	 -->
+	<context:component-scan base-package="com.springbook.view"></context:component-scan>
+	
+	<!-- @ExceptionHadler 인식 -->
+	<!-- HttpMessageCoverter를 구현한 모든 변환기 생성 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	
+	<!-- 파일 업로드 설정 -->
+	<!-- 
+		bean 객체 등록시  Resolver 클래스들은 정해진 id 값으로 지정해줘야 DispatcherServlet에서 인식 가능함 
+	 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 업로드 파일 최대 크기 설정, 기본 값: -1 -> 크기 제한없음 -->
+		<property name="maxUploadSize" value="-1"></property>
+	</bean>
+	
+	<!-- XML로 예외 처리 설정 -->
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.ArithmeticException">
+					common/arithmeticError.jsp
+				</prop>
+				<prop key="java.lang.NullpointerException">
+					common/nullPointerError.jsp
+				</prop>
+			</props>
+		</property>
+		<property name="defaultErrorView" value="common/error.jsp"></property>
+	</bean>
+	
+	<!-- 다국어 설정 -->
+	<!-- MessageSource 등록 -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>message.messageSource</value>
+				<!-- message.messageSource_ko.properties -->
+				<!-- message.messageSource_en.properties -->
+			</list>
+		</property>
+	</bean>
+	
+	<!-- LocaleResolver 등록 -->
+	<!-- SessionLocaleResolver : Http 요청 헤더로 전송된 Locale 정보를 추출하여 설정 -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"></bean>
+	
+	<!-- LocaleChangeInterceptor 등록 -->
+	<!-- 해당 화면에서 Locale 정보를 변경할 때 사용할 객체 -->
+	<mvc:interceptors>
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<!-- 클라이언트가 lang이라는 파라미터로 특정 언어 정보를 전달했을 때 해당 언어로 변경 -->
+			<property name="paramName" value="lang"/>
+		</bean>
+	</mvc:interceptors>
+	
+	<!-- HandlerMapping 등록 -->
+	<!-- <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/login.do">login</prop>
+				<prop key="/getBoardList.do">getBoardList</prop>
+				<prop key="/getBoard.do">getBoard</prop>
+				<prop key="/insertBoard.do">insertBoard</prop>
+				<prop key="/updateBoard.do">updateBoard</prop>
+				<prop key="/deleteBoard.do">deleteBoard</prop>
+				<prop key="/logout.do">logout</prop>
+			</props>
+		</property>
+	</bean>
+	
+	Controller 등록
+	<bean id="login" class="com.springbook.view.user.LoginController"></bean>
+	<bean id="getBoardList" class="com.springbook.view.board.GetBoardListController"></bean>
+	<bean id="getBoard" class="com.springbook.view.board.GetBoardController"></bean>
+	<bean id="insertBoard" class="com.springbook.view.board.InsertBoardController"></bean>
+	<bean id="updateBoard" class="com.springbook.view.board.UpdateBoardController"></bean>
+	<bean id="deleteBoard" class="com.springbook.view.board.DeleteBoardController"></bean>
+	<bean id="logout" class="com.springbook.view.user.LogoutController"></bean>
+	
+	ViewResolver 등록
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/board/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean> -->
+</beans>

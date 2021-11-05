@@ -43,4 +43,8 @@ public class BoardServiceImpl implements BoardService{
 	public List<BoardVO> getBoardList(BoardVO vo, Criteria cri) {
 		return boardDAO.getBoardList(vo, cri);
 	}
+	
+	public int selectBoardCount(BoardVO vo) {
+		return boardDAO.selectBoardCount(vo);
+	}
 }

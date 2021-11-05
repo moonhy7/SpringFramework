@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- mapper DTD 선언 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper 자체가 DAO 분리되어 나온 개념이기 때문에 namespace는 DAO 명을 따라가는 경우가 일반적임 -->
+<mapper namespace="BoardDAO">
+	<resultMap type="board" id="boardResult">
+		<id property="seq" column="SEQ"/>
+		<result property="title" column="TITLE"/>
+		<result property="writer" column="WRITER"/>
+		<result property="content" column="CONTENT"/>
+		<result property="regDate" column="REGDATE"/>
+		<result property="cnt" column="CNT"/>
+	</resultMap>
+
+	<insert id="insertBoard">
+	<!-- <selectKey keyProperty="seq" resultType="int">
+		SELECT BOARD_SEQ.NEXTVAL AS SEQ FROM DUAL
+	</selectKey>
+	// #{seq} : 사용자 입력 값 or VO에서 가져온 값을 의미 -->
+		<![CDATA[
+		INSERT INTO BOARD(
+						  SEQ
+						, TITLE
+						, WRITER
+						, CONTENT
+						)
+					VALUES(
+						 (SELECT IFNULL(MAX(SEQ),0) + 1 FROM BOARD A)
+							,  #{title}
+							,  #{writer}
+							,  #{content}	
+						)
+		]]>
+	</insert>
+	
+	<update id="updateBoard">
+		<![CDATA[
+		UPDATE BOARD
+			SET	
+				TITLE = #{title}
+			 ,  CONTENT = #{content}
+			 WHERE SEQ = #{seq}
+		]]>
+ 	</update>
+ 	
+ 	<delete id="deleteBoard">
+ 		<![CDATA[
+		DELETE FROM BOARD
+			 WHERE SEQ = #{seq}
+		]]>
+ 	</delete>
+ 	
+ 	<select id="getBoard" resultType="board">
+ 		<![CDATA[
+ 		SELECT * FROM BOARD
+ 			WHERE SEQ = #{seq}
+ 		]]>
+ 	</select>
+ 	
+ 	<!-- Dynamic SQL 적용 전 -->
+ 	<!-- <select id="getBoardList_T" resultType="boardResult">
+ 		<![CDATA[
+ 			SELECT * FROM BOARD
+ 			WHERE TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+ 			ORDER BY SEQ DESC
+ 		]]>
+ 	</select>
+ 	
+ 	<select id="getBoardList_C" resultType="boardResult">
+ 		<![CDATA[
+ 			SELECT * FROM BOARD
+ 			WHERE CONTENT LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+ 			ORDER BY SEQ DESC
+ 		]]>
+ 	</select> -->
+ 	
+ 	<!-- selectBoardCount -->
+ 	<select id="selectBoardCount" resultType="int">
+ 		SELECT COUNT(*) FROM BOARD
+ 			WHERE 1 = 1
+ 			<if test="searchCondition == 'TITLE'">
+ 			AND TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+ 		</if>
+ 		<if test="searchCondition == 'CONTENT'">
+ 			AND TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+ 		</if>
+ 	</select>
+ 	
+	<!-- MySQL -->
+ 	<select id="getBoardList" parameterType="HashMap" resultMap="boardResult">					
+ 		SELECT * FROM BOARD 
+ 		WHERE 1=1
+ 		<if test="board.searchCondition == 'TITLE'">
+ 			AND TITLE LIKE CONCAT_WS('%', #{board.searchKeyword}, '%')
+ 		</if>
+ 		<if test="board.searchCondition == 'CONTENT'">
+ 			AND TITLE LIKE CONCAT_WS('%', #{board.searchKeyword}, '%')
+ 		</if>
+ 			LIMIT #{criteria.amount} OFFSET #{criteria.startNum}
+ 	</select>
+ 	
+ 	<select id="getBoardSeq" resultType="int">
+ 		SELECT IFNULL(MAX(SEQ),0) + 1 
+ 			FROM BOARD A
+ 	</select>
+ 	
+ 	<insert id="insertBoardFileList" parameterType="boardFile">
+		INSERT INTO BOARD_FILE (
+									SEQ,
+									F_SEQ,
+									ORIGINAL_FILE_NAME,
+									FILE_PATH,
+									FILE_SIZE
+								)
+						VALUES (
+									#{seq},
+									(
+										SELECT IFNULL(MAX(F_SEQ), 0) + 1
+											FROM BOARD_FILE B
+										WHERE SEQ = #{seq} 
+									),
+									#{originalFileName},
+									#{filePath},
+									#{fileSize}
+								)
+	</insert>
+	
+	<select id="getBoardFileList" parameterType="int" resultType="boardFile">
+		SELECT * FROM BOARD_FILE
+			WHERE SEQ = #{seq}
+	</select>
+	
+	<delete id="deleteFile" parameterType="boardFile">
+		DELETE FROM BOARD_FILE
+			WHERE SEQ = #{seq}
+			  AND F_SEQ = #{fSeq}
+	</delete>
+	
+	<delete id="deleteFileList" parameterType="int">
+		DELETE FROM BOARD_FILE
+			WHERE SEQ = #{seq}
+	</delete>
+ 	
+ 	<!-- ORACLE -->
+ 	<!-- <select id="getBoardList" parameterMap="HashMap" resultMap="boardResult">	
+ 	<![CDATA[
+ 	SELECT * FROM
+	 		(
+		 		SELECT ROWNUM RN, * FROM BOARD 
+		 		WHERE 1=1
+		 			AND ROWNUM <+ #{criteria.pageNum} * #{criteria.amount}
+	]]>
+		 		<if test="board.searchCondition == 'TITLE'">
+		 			AND TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+		 		</if>
+		 		<if test="board.searchCondition == 'CONTENT'">
+		 			AND TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+		 		</if>
+	<![CDATA[
+	 		)
+ 		WHERE RN > (#{criteria.pageNum} - 1) * #{criteria.amount}
+ 	]]>
+ 	</select> -->
+</mapper>

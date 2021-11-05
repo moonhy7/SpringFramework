@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+
+	<!-- Alias 설정 -->
+	<typeAliases>
+		<typeAlias type="com.springbook.biz.board.BoardVO" alias="board"></typeAlias>
+		<typeAlias type="com.springbook.biz.board.BoardFileVO" alias="boardFile"></typeAlias>
+	</typeAliases>
+	
+	<!-- Sql Mapper 설정 -->
+	<mappers>
+		<mapper resource="mappings/board-mapping.xml" />
+		<!-- <mapper rewource="mappings/yser-mapping.xml" /> -->
+	</mappers>
+</configuration>

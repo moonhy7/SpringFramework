@@ -39,8 +39,13 @@ public class BoardDAOMybatis {
 	public List<BoardVO> getBoardList(BoardVO vo, Criteria cri) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("board", vo);
+		cri.setStartNum((cri.getPageNum() - 1) * cri.getAmount());
 		paramMap.put("criteria", cri);
 		System.out.println("====> Mybatis로 getBoardList() 기능 처리");
 		return mybatis.selectList("BoardDAO.getBoardList", paramMap);
+	}
+	
+	public int selectBoardCount(BoardVO vo) {
+		return mybatis.selectOne("BoardDAO.selectBoardCount", vo);
 	}
 }

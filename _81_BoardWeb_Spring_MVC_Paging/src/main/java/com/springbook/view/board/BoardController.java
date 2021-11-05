@@ -84,13 +84,16 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/getBoard.do")
-	public String getBoard(BoardVO vo, Model model) {
+	public String getBoard(BoardVO vo, Model model, Criteria cri) {
 		System.out.println("글 상세 조회 처리");
 		
+		System.out.println(cri.getPageNum());
+		System.out.println(cri.getAmount());
 		//Model 객체는 RequestServlet 데이터 보관소에 저장
 		//RequestServlet 데이터 보관소에 저장하는 것과 동일하게 동작
 		//request.setAttribute("board", boardDAO.getBoard(vo)) == model.addAttribute("board", boardDAO.getBoard(vo))
 		model.addAttribute("board", boardService.getBoard(vo));
+		model.addAttribute("criteria", cri);
 		return "getBoard.jsp";
 	}
 	
@@ -100,7 +103,7 @@ public class BoardController {
 	//				  required = 생략 가능 여부
 	public String getBoardList(BoardVO vo, Model model, Criteria cri) {
 		System.out.println("글 목록 검색 처리");
-		
+		System.out.println(vo.getSearchKeyword());
 		//Null check
 		//로그인 화면에서 로그인성공 시 getBoardList.do 호출 할 때 searchKeyword, searchCondition 값의 null 방지 
 		if(vo.getSearchCondition() == null) {
@@ -110,8 +113,10 @@ public class BoardController {
 			vo.setSearchKeyword("");
 		}
 		
+		int total = boardService.selectBoardCount(vo);
+		
 		model.addAttribute("boardList", boardService.getBoardList(vo, cri));
-		model.addAttribute("pageMaker", new PageVO(cri, 123));
+		model.addAttribute("pageMaker", new PageVO(cri, total));
 		return "getBoardList.jsp";
 	}
 }

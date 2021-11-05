@@ -11,6 +11,8 @@
 		<h1>글 상세</h1>
 		<a href="logout.do">Log-out</a>
 		<form action="updateBoard.do" method="post">
+			<input type="hidden" id="pageNum" name="pageNum" value=${criteria.pageNum }>
+			<input type="hidden" id="amount"name="amount" value=${criteria.amount }>
 			<input type="hidden" name="seq" value="${board.seq }">
 			<table border="1" cellpadding="0" cellspacing="0">
 				<tr>
@@ -45,7 +47,7 @@
 		<hr>
 		<a href="insertBoard.jsp">글 등록</a>&nbsp;&nbsp;&nbsp;
 		<a href="deleteBoard.do?seq=${board.seq }">글 삭제</a>&nbsp;&nbsp;&nbsp;
-		<a href="getBoardList.do">글 목록</a>
+		<a href="getBoardList.do?pageNum=${criteria.pageNum }&amount=${criteria.amount}">글 목록</a>
 	</center>
 </body>
 </html>

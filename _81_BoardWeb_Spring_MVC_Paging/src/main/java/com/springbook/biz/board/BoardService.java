@@ -18,4 +18,6 @@ public interface BoardService {
 	
 	//글 목록 조회
 	List<BoardVO> getBoardList(BoardVO vo, Criteria cri);
+	
+	int selectBoardCount(BoardVO vo);
 }

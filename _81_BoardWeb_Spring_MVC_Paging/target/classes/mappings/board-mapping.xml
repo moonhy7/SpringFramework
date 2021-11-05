@@ -76,20 +76,50 @@
  		]]>
  	</select> -->
  	
- 	<!-- <select id="getBoardList" resultType="board" parameterType="board"> -->		
- 	<select id="getBoardList" parameterMap="HashMap" resultMap="boardResult">					
+ 	<!-- selectBoardCount -->
+ 	<select id="selectBoardCount" resultType="int">
+ 		SELECT COUNT(*) FROM BOARD
+ 			WHERE 1 = 1
+ 			<if test="searchCondition == 'TITLE'">
+ 			AND TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+ 		</if>
+ 		<if test="searchCondition == 'CONTENT'">
+ 			AND TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+ 		</if>
+ 	</select>
+ 	
+	<!-- MySQL -->
+ 	<select id="getBoardList" parameterType="HashMap" resultMap="boardResult">					
  		SELECT * FROM BOARD 
  		WHERE 1=1
  		<if test="board.searchCondition == 'TITLE'">
- 			AND TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+ 			AND TITLE LIKE CONCAT_WS('%', #{board.searchKeyword}, '%')
  		</if>
  		<if test="board.searchCondition == 'CONTENT'">
- 			AND TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
- 		</if>	
- 		<!-- <if test="title != null">
- 			AND 1=1 해주는 이유 : 조건이 많아질 때를 고려해서 where절이 모두 지나가도록 해주려고
- 		</if> -->
- 			ORDER BY SEQ DESC
- 			LIMIT #{criteria.amount} OFFSET
+ 			AND TITLE LIKE CONCAT_WS('%', #{board.searchKeyword}, '%')
+ 		</if>
+ 			LIMIT #{criteria.amount} OFFSET #{criteria.startNum}
  	</select>
+ 	
+ 	
+ 	<!-- ORACLE -->
+ 	<!-- <select id="getBoardList" parameterMap="HashMap" resultMap="boardResult">	
+ 	<![CDATA[
+ 	SELECT * FROM
+	 		(
+		 		SELECT ROWNUM RN, * FROM BOARD 
+		 		WHERE 1=1
+		 			AND ROWNUM <+ #{criteria.pageNum} * #{criteria.amount}
+	]]>
+		 		<if test="board.searchCondition == 'TITLE'">
+		 			AND TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+		 		</if>
+		 		<if test="board.searchCondition == 'CONTENT'">
+		 			AND TITLE LIKE CONCAT_WS('%', #{searchKeyword}, '%')
+		 		</if>
+	<![CDATA[
+	 		)
+ 		WHERE RN > (#{criteria.pageNum} - 1) * #{criteria.amount}
+ 	]]>
+ 	</select> -->
 </mapper>
